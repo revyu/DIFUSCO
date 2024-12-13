@@ -22,9 +22,9 @@ python -u difusco/train.py \
   --weight_decay 0.0001 \
   --lr_scheduler "cosine-decay" \
   --storage_path "/your/storage/path" \
-  --training_split "/your/tsp50_train_concorde.txt" \
-  --validation_split "/your/tsp50_valid_concorde.txt" \
-  --test_split "/your/tsp50_test_concorde.txt" \
+  --training_split "data\data\tsp_data.txt" \
+  --validation_split "data\data\tsp_data_test.txt" \
+  --test_split "data\data\tsp_data_test.txt" \
   --batch_size 64 \
   --num_epochs 50 \
   --validation_examples 8 \
@@ -81,7 +81,7 @@ python -u difusco/train.py \
   --learning_rate 0.0002 \
   --weight_decay 0.0001 \
   --lr_scheduler "cosine-decay" \
-  --storage_path "/your/storage/path" \
+  --storage_path "storage_path" \
   --training_split "/your/tsp500_train_concorde.txt" \
   --validation_split "/your/tsp500_valid_concorde.txt" \
   --test_split "/your/tsp500_test_concorde.txt" \

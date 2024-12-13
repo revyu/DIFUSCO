@@ -13,7 +13,7 @@ from pytorch_lightning.strategies.ddp import DDPStrategy
 from pytorch_lightning.utilities import rank_zero_info
 
 from pl_tsp_model import TSPModel
-from pl_mis_model import MISModel
+
 
 
 def arg_parser():
@@ -76,7 +76,7 @@ def main(args):
     model_class = TSPModel
     saving_mode = 'min'
   elif args.task == 'mis':
-    model_class = MISModel
+    
     saving_mode = 'max'
   else:
     raise NotImplementedError
@@ -104,15 +104,15 @@ def main(args):
   lr_callback = LearningRateMonitor(logging_interval='step')
 
   trainer = Trainer(
-      accelerator="auto",
-      devices=torch.cuda.device_count() if torch.cuda.is_available() else None,
-      max_epochs=epochs,
-      callbacks=[TQDMProgressBar(refresh_rate=20), checkpoint_callback, lr_callback],
-      logger=wandb_logger,
-      check_val_every_n_epoch=1,
-      strategy=DDPStrategy(static_graph=True),
-      precision=16 if args.fp16 else 32,
-  )
+    accelerator="auto",
+    devices=torch.cuda.device_count() if torch.cuda.is_available() else None,
+    max_epochs=epochs,
+    callbacks=[TQDMProgressBar(refresh_rate=20), checkpoint_callback, lr_callback],
+    logger=wandb_logger,
+    check_val_every_n_epoch=1,
+    strategy="auto",  # Использование Data Parallel вместо DDP
+    precision=16 if args.fp16 else 32,
+)
 
   rank_zero_info(
       f"{'-' * 100}\n"
@@ -122,6 +122,7 @@ def main(args):
 
   ckpt_path = args.ckpt_path
 
+  torch.cuda.empty_cache()
   if args.do_train:
     if args.resume_weight_only:
       model = model_class.load_from_checkpoint(ckpt_path, param_args=args)
